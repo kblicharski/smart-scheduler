@@ -23,5 +23,17 @@ def print_all_courses_in_mock_data():
             print(course)
             i += 1
 
+course1 = CourseFactory()
+course2 = CourseFactory()
+
 
 problem = Problem()
+
+"""
+Essentially, here is what we want to do:
+The user inputs a list of course numbers and their possible times.
+The solver then determines the solution space for all valid course combinations.
+
+E.g.
+1000: 
+"""

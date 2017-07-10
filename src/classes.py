@@ -7,6 +7,8 @@ import datetime
 # TODO: Consider including more fields that might be of interest
 # section, instructor, course type (lecture, discussion, lab), semester
 # hours, prerequisites, corequisites, location (building, room), days offered
+
+# TODO: Refactor this to make Courses have MULTIPLE times.
 class Course:
     """
     Represents a Course.

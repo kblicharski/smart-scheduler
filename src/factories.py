@@ -61,6 +61,7 @@ class TimeBlockFactory:
         return (output_hours, output_minutes)
 
 
+# TODO: Consider allowing for manual course creation as well
 class CourseFactory:
     """
     Factory to quickly generate courses from mock data.
