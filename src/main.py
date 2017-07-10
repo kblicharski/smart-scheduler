@@ -5,27 +5,31 @@ from factories import CourseFactory
 from constraint import Problem
 
 
-def print_all_courses_in_mock_data():
+def populate_courses():
     """
-    Originally for testing purposes -- verifies that courses are
-    formatted correctly.
+    Populates the list of courses from mock data.
     """
     i = 0
-    course_set = set()
+    courses = set()
     factory = CourseFactory()
 
     while i < factory.number_of_courses:
         course = factory.get_course()
 
-        # If it's a unique course, print it
-        if course.number not in course_set:
-            course_set.add(course.number)
-            print(course)
+        # If it's a unique course, add it
+        if course not in courses:
+            courses.add(course)
             i += 1
 
+    return courses
 
 problem = Problem()
-print_all_courses_in_mock_data()
+course_set = populate_courses()
+print("\n".join(str(x) for x in course_set))
+
+for course in course_set:
+    problem.addVariable(course, course.time_blocks)
+
 
 """
 Essentially, here is what we want to do:
