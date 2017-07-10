@@ -1,3 +1,7 @@
+"""
+This file is temporary and intended for rudimentary testing of the constraint
+solver that we are using.
+"""
 from classes import CourseNumber
 
 
@@ -40,9 +44,14 @@ mock_courses = [
     }
 ]
 
-mock_times = [
+# Classes generally start between 8am and 5pm,
+# at either the beginning of the hour or at the 30 minute mark
+mock_start_times = [
     # Hours
-    [i for i in range(0, 23)],
+    [i for i in range(8, 17)],
     # Minutes
-    [i for i in range(0, 59)]
+    [0, 30]
 ]
+
+# Standard classes are either 50 or 75 minutes long
+mock_class_durations = [50, 75]

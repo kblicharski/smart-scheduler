@@ -11,5 +11,5 @@ while i < factory.number_of_courses:
     # If it's a unique course, print it
     if course.number not in course_set:
         course_set.add(course.number)
-        print(i, course)
+        print(course)
         i += 1
