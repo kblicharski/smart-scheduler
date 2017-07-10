@@ -61,4 +61,5 @@ the solution space.
 
 This is the part I am really unsure of. After a cursory glance at the docs,
 I am not even sure if this is what the library was intended for.
+http://labix.org/doc/constraint/
 """
