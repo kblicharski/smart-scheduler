@@ -4,7 +4,9 @@ This file contains class definitions for the various values we are considering.
 import datetime
 
 
-# TODO: Refactor Course to include a department field
+# TODO: Consider including more fields that might be of interest
+# section, instructor, course type (lecture, discussion, lab), semester
+# hours, prerequisites, corequisites, location (building, room), days offered
 class Course:
     """
     Represents a Course.
