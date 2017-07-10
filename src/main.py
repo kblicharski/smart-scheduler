@@ -2,7 +2,7 @@
 This is the entry point to the program.
 """
 from factories import CourseFactory
-from constraint import Problem, Solver
+from constraint import Problem
 
 
 def print_all_courses_in_mock_data():
@@ -23,11 +23,9 @@ def print_all_courses_in_mock_data():
             print(course)
             i += 1
 
-course1 = CourseFactory()
-course2 = CourseFactory()
-
 
 problem = Problem()
+print_all_courses_in_mock_data()
 
 """
 Essentially, here is what we want to do:
@@ -37,7 +35,7 @@ We then fetch the list of Courses that are identified by these course numbers.
 Each course will then contain the times that it is running at.
 
 We will then add a variable for each Course in the course list, with its domain.
-The domain will be the list of possible time_block values the course is 
+The domain will be the list of possible time_block values the course is
 offered at.
 
 e.g.
@@ -63,3 +61,11 @@ This is the part I am really unsure of. After a cursory glance at the docs,
 I am not even sure if this is what the library was intended for.
 http://labix.org/doc/constraint/
 """
+
+
+def check_for_overlapping(a, b):
+    """
+    Takes two courses and determines if they have overlapping time blocks.
+    Returns true or false.
+    """
+    first_time_block = a.get_time_block()

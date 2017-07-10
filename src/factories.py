@@ -8,7 +8,7 @@ from classes import Course, TimeBlock
 from mock_data import mock_courses, mock_start_times, mock_class_durations
 
 
-class TimeBlockFactory:
+class TimeBlockFactory():
     """
     Factory to quickly generate a class time block using mock data.
     """
@@ -46,7 +46,8 @@ class TimeBlockFactory:
 
         return TimeBlock(start_time, end_time)
 
-    def minutes_to_hours(self, input_minutes):
+    @staticmethod
+    def minutes_to_hours(input_minutes):
         """
         Helper function to simplify logic when creating time blocks.
         Returns a tuple of (hours, minutes) from the input of minutes.
@@ -62,7 +63,7 @@ class TimeBlockFactory:
 
 
 # TODO: Consider allowing for manual course creation as well
-class CourseFactory:
+class CourseFactory():
     """
     Factory to quickly generate courses from mock data.
     """
@@ -73,8 +74,9 @@ class CourseFactory:
         course = random.choice(mock_courses)
         time_block = TimeBlockFactory().get_time_block()
 
-        return Course(name=course['course_name'],
+        return Course(department=course['course_department'],
                       number=course['course_number'],
+                      name=course['course_name'],
                       time_block=time_block)
 
     @property

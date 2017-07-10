@@ -9,24 +9,33 @@ import datetime
 # hours, prerequisites, corequisites, location (building, room), days offered
 
 # TODO: Refactor this to make Courses have MULTIPLE times.
-class Course:
+class Course():
     """
     Represents a Course.
 
-    name    (string): the name of the course
-    number  (int): the course number
-    time_block (TimeBlock): the time the course runs at
+    department  (string): the department offering the course
+    number      (int): the course number
+    name        (string): the name of the course
+    time_block  (TimeBlock): the time the course runs at
     """
-    def __init__(self, name, number, time_block):
+    def __init__(self, department, name, number, time_block):
+        self.department = department
         self.number = number
         self.name = name
         self.time_block = time_block
 
     def __str__(self):
-        return '{} - {} - {}'.format(self.number, self.name, self.time_block)
+        return '{}:{} - {} - {}'.format(self.department, self.number, self.name,
+                                        self.time_block)
+
+    def get_time_block(self):
+        """
+        Returns the time block associated with a course
+        """
+        return self.time_block
 
 
-class TimeBlock:
+class TimeBlock():
     """
     Represents the allotted time for a course.
 
@@ -49,13 +58,3 @@ class TimeBlock:
         :return:
         """
         return datetime.timedelta(self.end - self.start)
-
-
-# TODO: Remove this class after refactoring Course
-class CourseNumber:
-    def __init__(self, department, number):
-        self.department = department
-        self.number = number
-
-    def __str__(self):
-        return self.department + ':' + str(self.number)
