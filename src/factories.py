@@ -8,6 +8,9 @@ from classes import Course, TimeBlock
 from mock_data import mock_courses, mock_start_times, mock_class_durations
 
 
+MAX_TIME_BLOCKS_FOR_COURSES = 5
+
+
 class TimeBlockFactory():
     """
     Factory to quickly generate a class time block using mock data.
@@ -72,12 +75,13 @@ class CourseFactory():
         Returns a Course using the mock course data and the TimeBlockFactory
         """
         course = random.choice(mock_courses)
-        time_block = TimeBlockFactory().get_time_block()
+        time_blocks = [TimeBlockFactory().get_time_block() for i in range(
+                MAX_TIME_BLOCKS_FOR_COURSES)]
 
         return Course(department=course['course_department'],
                       number=course['course_number'],
                       name=course['course_name'],
-                      time_block=time_block)
+                      time_blocks=time_blocks)
 
     @property
     def number_of_courses(self):

@@ -18,15 +18,17 @@ class Course():
     name        (string): the name of the course
     time_block  (TimeBlock): the time the course runs at
     """
-    def __init__(self, department, name, number, time_block):
+    def __init__(self, department, name, number, time_blocks):
         self.department = department
         self.number = number
         self.name = name
-        self.time_block = time_block
+        self.time_blocks = time_blocks
 
     def __str__(self):
-        return '{}:{} - {} - {}'.format(self.department, self.number, self.name,
-                                        self.time_block)
+        time_block_listings = [str(time_block) for time_block in
+                               self.time_blocks]
+        return '{}:{} - {} - {}'.format(self.department, self.number,
+                                        self.name, time_block_listings)
 
     def get_time_block(self):
         """
