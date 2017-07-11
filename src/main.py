@@ -11,14 +11,16 @@ def populate_courses():
     """
     i = 0
     courses = set()
+    course_names = set()
     factory = CourseFactory()
 
     while i < factory.number_of_courses:
         course = factory.get_course()
 
         # If it's a unique course, add it
-        if course not in courses:
+        if course.name not in course_names:
             courses.add(course)
+            course_names.add(course.name)
             i += 1
 
     return courses
@@ -29,7 +31,6 @@ print("\n".join(str(x) for x in course_set))
 
 for course in course_set:
     problem.addVariable(course, course.time_blocks)
-
 
 """
 Essentially, here is what we want to do:
@@ -65,11 +66,3 @@ This is the part I am really unsure of. After a cursory glance at the docs,
 I am not even sure if this is what the library was intended for.
 http://labix.org/doc/constraint/
 """
-
-
-def check_for_overlapping(a, b):
-    """
-    Takes two courses and determines if they have overlapping time blocks.
-    Returns true or false.
-    """
-    first_time_block = a.get_time_block()

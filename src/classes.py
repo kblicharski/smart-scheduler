@@ -34,7 +34,7 @@ class Course():
         """
         Returns the time block associated with a course
         """
-        return self.time_block
+        return self.time_blocks
 
 
 class TimeBlock():
@@ -57,6 +57,5 @@ class TimeBlock():
     def duration(self):
         """
         Returns the duration of the class as a time object
-        :return:
         """
         return datetime.timedelta(self.end - self.start)
