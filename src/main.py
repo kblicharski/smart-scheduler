@@ -2,9 +2,10 @@
 This is the entry point to the program.
 """
 from factories import CourseFactory
-from constraint import Problem
+from requests import get
+from boltons.iterutils import remap
+from pprint import pprint
 
-import requests
 
 def populate_courses():
     """
@@ -60,15 +61,22 @@ def fetch_courses(course_input: list):
     return fetched_courses
 
 
-# print("\n".join(str(x) for x in course_set))
-
-payload = "json={sessionId: 69, courseSubject: 'cs'}"
+# this gets the information from the API endpoint
+payload = "json={sessionId: 68, courseSubject: 'cs'}"
 url = 'https://api.maui.uiowa.edu/maui/api/pub/registrar/sections'
-response = requests.get(url=url, params=payload)
-dictionary = response.json()
+response = get(url=url, params=payload)
 
-for i in dictionary['payload']:
-    print(i)
+# this is a dictionary of all CS courses being offered this fall, and metadata
+json_response = response.json()
+
+# this is the courses themselves, as a list of dictionaries
+courses = json_response['payload']
+
+# here we remove empty information
+remapped = remap(courses, lambda p, k, v: v is not None and v != [])
+
+for course in remapped:
+    pprint(course['courseTitle'])
 
 """
 Session IDs for upcoming semesters
