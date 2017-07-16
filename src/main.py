@@ -4,6 +4,8 @@ This is the entry point to the program.
 from factories import CourseFactory
 from constraint import Problem
 
+import requests
+
 
 def populate_courses():
     """
@@ -59,56 +61,52 @@ def fetch_courses(course_input: list):
     return fetched_courses
 
 
-problem = Problem()
-course_set = populate_courses()
-
-user_input = ['CS:2230', 'CS:2210', 'MATH:3700']
-invalid_user_input = ['CS:2230', 'ECE:2230']
-
-courses = fetch_courses(user_input)
-print(courses)
 # print("\n".join(str(x) for x in course_set))
 
+payload = "json={sessionId: 69, courseSubject: 'cs'}"
+url = 'https://api.maui.uiowa.edu/maui/api/pub/registrar/sections'
+response = requests.get(url=url, params=payload)
+print(response.status_code)
+print(response.url)
+print(response.json())
 
-# This will work but then the library isn't useful anymore
-for course in course_set:
-    problem.addVariable(course, course.time_blocks)
+url_2 = "https://api.maui.uiowa.edu/maui/api/pub/registrar/sections?json={sessionId: 69, courseSubject: 'cs'}&exclude={}&pageStart=0&pageSize=9999&"
+other_response = requests.get(url_2)
+print(other_response.status_code)
+print(other_response.url)
+print(response.json())
 
-# This won't work because lists aren't hashable
-# problem.addVariable(list(course_set), [course.get_time_block() for course in
-#                                  course_set])
+# https://api.maui.uiowa.edu/maui/api/pub/registrar/sections?json={sessionId: 69, courseSubject: 'cs'}&exclude={}&pageStart=0&pageSize=9999&
+# https://api.maui.uiowa.edu/maui/api/pub/registrar/sections?sessionId=69&courseSubject=cs
 
 """
-Essentially, here is what we want to do:
-
-The user inputs a list of course numbers they want to enroll in.
-We then fetch the list of Courses that are identified by these course numbers.
-Each course will then contain the times that it is running at.
-
-We will then add a variable for each Course in the course list, with its domain.
-The domain will be the list of possible time_block values the course is
-offered at.
-
-e.g.
-user_input  [2230, 2210, 2630, 4172, 3700]
-(if a course with that course number does not exist, print an error)
-
-courses     [ ... ]
-
-We then define the Problem by adding each variable with its domain.
-The variables will be the Courses, and the domain will be the
-list of time_blocks associated with the Course, looking something
-like this:
-
-problem.addVariable(Course1: [12:30-13:30, 14:30-15:30, 12:00-13:00])
-...
-problem.addVariable(CourseN: [9:00-11:00, 12:00-14:00]
-
-After defining these variables and their domains, all we need to do is define a
-constraint for them -- this is the algorithm that the solver will use to build
-the solution space.
-
-This is the part I am really unsure of. After a cursory glance at the docs,
-I am not even sure if this is what the library was intended for.
-http://labix.org/doc/constraint/
+Session IDs for upcoming semesters
+    {
+        "id": 69,
+        "startDate": "2017-05-15T05:00:00.000+0000",
+        "endDate": "2017-08-04T05:00:00.000+0000",
+        "shortDescription": "Summer 2017",
+        "legacyCode": "20171"
+    },
+    {
+        "id": 68,
+        "startDate": "2017-08-21T05:00:00.000+0000",
+        "endDate": "2017-12-08T06:00:00.000+0000",
+        "shortDescription": "Fall 2017",
+        "legacyCode": "20173"
+    },
+    {
+        "id": 70,
+        "startDate": "2017-12-27T06:00:00.000+0000",
+        "endDate": "2018-01-12T06:00:00.000+0000",
+        "shortDescription": "Winter 2017",
+        "legacyCode": "20175"
+    },
+    {
+        "id": 71,
+        "startDate": "2018-01-16T06:00:00.000+0000",
+        "endDate": "2018-05-04T05:00:00.000+0000",
+        "shortDescription": "Spring 2018",
+        "legacyCode": "20178"
+    },
 """
