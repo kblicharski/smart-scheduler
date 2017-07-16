@@ -73,10 +73,27 @@ json_response = response.json()
 courses = json_response['payload']
 
 # here we remove empty information
-remapped = remap(courses, lambda p, k, v: v is not None and v != [])
+interested_fields = ['courseTitle', 'sectionId', 'sectionNumber',
+                     'subjectCourse', 'timeAndLocations']
+interested_time_fields = ['startTime', 'endTime', 'days']
 
-for course in remapped:
-    pprint(course['courseTitle'])
+func = lambda p, k, v: v is not None and v != []
+remapped = remap(courses, func)
+
+
+def filter_keys(x):
+    return {k: v for k, v in x.items() if k in interested_fields}
+
+filtered = list(map(filter_keys, remapped))
+
+for i in range(len(filtered)):
+    filtered_times = list(map(lambda x: {k: v for k, v in x.items() if k in
+                                         interested_time_fields}, filtered[
+        i]['timeAndLocations']))
+
+    filtered[i]['timeAndLocations'] = filtered_times
+
+pprint(filtered)
 
 """
 Session IDs for upcoming semesters
