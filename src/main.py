@@ -6,7 +6,6 @@ from constraint import Problem
 
 import requests
 
-
 def populate_courses():
     """
     Populates the list of courses from mock data.
@@ -66,18 +65,10 @@ def fetch_courses(course_input: list):
 payload = "json={sessionId: 69, courseSubject: 'cs'}"
 url = 'https://api.maui.uiowa.edu/maui/api/pub/registrar/sections'
 response = requests.get(url=url, params=payload)
-print(response.status_code)
-print(response.url)
-print(response.json())
+dictionary = response.json()
 
-url_2 = "https://api.maui.uiowa.edu/maui/api/pub/registrar/sections?json={sessionId: 69, courseSubject: 'cs'}&exclude={}&pageStart=0&pageSize=9999&"
-other_response = requests.get(url_2)
-print(other_response.status_code)
-print(other_response.url)
-print(response.json())
-
-# https://api.maui.uiowa.edu/maui/api/pub/registrar/sections?json={sessionId: 69, courseSubject: 'cs'}&exclude={}&pageStart=0&pageSize=9999&
-# https://api.maui.uiowa.edu/maui/api/pub/registrar/sections?sessionId=69&courseSubject=cs
+for i in dictionary['payload']:
+    print(i)
 
 """
 Session IDs for upcoming semesters
