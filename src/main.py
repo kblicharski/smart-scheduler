@@ -1,10 +1,17 @@
 """
 This is the entry point to the program.
 """
+import re
+
 from factories import CourseFactory
 from requests import get
 from boltons.iterutils import remap
 from pprint import pprint
+
+
+INTERESTED_KEYS = ['courseTitle', 'sectionId', 'sectionNumber',
+                   'subjectCourse', 'timeAndLocations']
+INTERESTED_TIME_KEYS = ['startTime', 'endTime', 'days']
 
 
 def populate_courses():
@@ -61,39 +68,62 @@ def fetch_courses(course_input: list):
     return fetched_courses
 
 
+def clean_and_filter_courses(courses):
+    def filter_keys(input_dict, keys):
+        return {k: v for k, v in input_dict.items() if k in keys}
+
+    def filter_time_fields(input_list):
+        for i in range(len(input_list)):
+            filtered_times = list(map(lambda p: filter_keys(p,
+                                                            INTERESTED_TIME_KEYS),
+                                      input_list[i]['timeAndLocations']))
+            input_list[i]['timeAndLocations'] = filtered_times
+
+    cleaned = remap(courses, lambda p, k, v: v is not None and v != [])
+    filtered = list(map(lambda p: filter_keys(p, INTERESTED_KEYS), cleaned))
+    filter_time_fields(filtered)
+    return filtered
+
+
+def print_and_log_courses(course_list):
+    pretty_file = open('output.txt', mode='w')
+    csv_file = open('raw_output.txt', mode='w')
+
+    for course in course_list:
+        try:
+            str = '{}:{}\t{} - {}\t\t{}'\
+                .format(course['subjectCourse'],
+                        course['sectionNumber'],
+                        course['timeAndLocations'][0]['startTime'],
+                        course['timeAndLocations'][0]['endTime'],
+                        course['courseTitle'])
+        except KeyError:
+            str = '{}:{}\t\t\t\t\t\t{}'\
+                .format(course['subjectCourse'],
+                        course['sectionNumber'],
+                        course['courseTitle'])
+
+        str += '\n'
+        pretty_file.write(str)
+
+        str = re.sub('\t+', ',', str)
+        str = re.sub(' - ', ',', str)
+        csv_file.write(str)
+
+    pretty_file.close()
+    csv_file.close()
+
+
 # this gets the information from the API endpoint
 payload = "json={sessionId: 68, courseSubject: 'cs'}"
 url = 'https://api.maui.uiowa.edu/maui/api/pub/registrar/sections'
 response = get(url=url, params=payload)
-
-# this is a dictionary of all CS courses being offered this fall, and metadata
 json_response = response.json()
+raw_courses = json_response['payload']
 
-# this is the courses themselves, as a list of dictionaries
-courses = json_response['payload']
-
-# here we remove empty information
-interested_fields = ['courseTitle', 'sectionId', 'sectionNumber',
-                     'subjectCourse', 'timeAndLocations']
-interested_time_fields = ['startTime', 'endTime', 'days']
-
-func = lambda p, k, v: v is not None and v != []
-remapped = remap(courses, func)
-
-
-def filter_keys(x):
-    return {k: v for k, v in x.items() if k in interested_fields}
-
-filtered = list(map(filter_keys, remapped))
-
-for i in range(len(filtered)):
-    filtered_times = list(map(lambda x: {k: v for k, v in x.items() if k in
-                                         interested_time_fields}, filtered[
-        i]['timeAndLocations']))
-
-    filtered[i]['timeAndLocations'] = filtered_times
-
-pprint(filtered)
+courses = clean_and_filter_courses(raw_courses)
+pprint(courses)
+print_and_log_courses(courses)
 
 """
 Session IDs for upcoming semesters
