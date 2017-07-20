@@ -2,12 +2,11 @@
 This is the entry point to the program.
 """
 import re
-import datetime
 
-from pprint import pprint
-from src.classes import TimeBlock
+from constraint import Problem, Solver, Constraint
 
-from .api import get_courses
+from api import get_courses
+from classes import CourseSection
 
 
 def log_courses(courses: list):
@@ -20,7 +19,7 @@ def log_courses(courses: list):
 
     for course in courses:
         try:
-            str = '{}:{}\t{} - {}\t\t{}'\
+            str = '{}:{}\t{} - {}\t\t{}' \
                 .format(course['subjectCourse'],
                         course['sectionNumber'],
                         course['timeAndLocations'][0]['startTime'],
@@ -31,7 +30,7 @@ def log_courses(courses: list):
             Some courses do not have times. We do not want to halt execution,
             just print them in a different format.
             """
-            str = '{}:{}\t\t\t\t\t\t{}'\
+            str = '{}:{}\t\t\t\t\t\t{}' \
                 .format(course['subjectCourse'],
                         course['sectionNumber'],
                         course['courseTitle'])
@@ -47,14 +46,88 @@ def log_courses(courses: list):
     csv_file.close()
 
 
+def make_course(course: dict):
+    """
+    Helper function to quickly turn JSON data into CourseSections for testing
+    """
+    return CourseSection(course['courseTitle'], course[
+        'sectionId'], course['sectionNumber'], course[
+                             'subjectCourse'], course['timeAndLocations'])
+
 cs_courses = get_courses(68, 'cs')
-ece_courses = get_courses(68, 'ece')
-math_courses = get_courses(68, 'math')
-courses = cs_courses + ece_courses + math_courses
+# ece_courses = get_courses(68, 'ece')
+# math_courses = get_courses(68, 'math')
+courses = cs_courses
 
 log_courses(courses)
-pprint(courses[0])
 
+
+problem = Problem()
+
+course1 = [make_course(courses[0]), make_course(courses[1])]
+
+course2 = []
+for i in range(2, 7):
+    course2.append(make_course(courses[i]))
+
+print('First Year Seminar')
+for i in range(len(course1)):
+    print('{} - {}'.format(i, make_course(courses[i]).time_block))
+
+print('Principles of Computing')
+for i in range(len(course2)):
+    print('{} - {}'.format(i,
+                           make_course(courses[i + len(course1)]).time_block))
+
+
+problem.addVariable('a', course1)
+problem.addVariable('b', course2)
+
+# Valid Pairs
+'''
+[17:30-20:00]
+[09:30-10:20]
+
+[17:30-20:00]
+[13:30-14:20]
+
+[17:30-20:00]
+[11:30-12:20]
+
+[17:30-20:00]
+[12:30-13:20]
+
+[09:30-10:20]
+[17:30-20:00]
+
+[09:30-10:20]
+[13:30-14:20]
+
+[09:30-10:20]
+[11:30-12:20]
+
+[09:30-10:20]
+[12:30-13:20]
+
+Total of 8 valid pairs, 2 invalid pairs
+'''
+
+
+def constraint_func(a: CourseSection, b: CourseSection):
+    return a.start_time > b.end_time or b.start_time > a.end_time
+
+
+problem.addConstraint(constraint_func, ['a', 'b'])
+
+solution_set = problem.getSolutions()
+print(len(solution_set))
+
+# the solution is a dictionary containing two courses that form a valid solution
+for solution in solution_set:
+    # the key is the name of the variables
+    for key in solution:
+        print(solution[key].time_block)
+    print('\n')
 
 '''
 def populate_courses():
