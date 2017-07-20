@@ -1,14 +1,10 @@
 """
 This file contains class definitions for the various values we are considering.
+Eventually we will want to set up automatic JSON deserializing.
 """
 import datetime
 
 
-# TODO: Consider including more fields that might be of interest
-# section, instructor, course type (lecture, discussion, lab), semester
-# hours, prerequisites, corequisites, location (building, room), days offered
-
-# TODO: Refactor this to make Courses have MULTIPLE times.
 class Course():
     """
     Represents a Course.
