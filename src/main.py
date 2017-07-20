@@ -14,8 +14,8 @@ def log_courses(courses: list):
     Opens and writes to two different files.
     One for raw, comma-separated data and the other for human-readable output.
     """
-    pretty_file = open('output.txt', mode='w')
-    csv_file = open('raw_output.txt', mode='w')
+    pretty_file = open('../output.txt', mode='w')
+    csv_file = open('../raw_output.txt', mode='w')
 
     for course in courses:
         try:
