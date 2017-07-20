@@ -64,68 +64,68 @@ log_courses(courses)
 
 problem = Problem()
 
-course1 = [make_course(courses[0]), make_course(courses[1])]
+course1 = [make_course(courses[0]),
+           make_course(courses[1])]
 
-course2 = []
-for i in range(2, 7):
-    course2.append(make_course(courses[i]))
+course2 = [make_course(courses[2]),
+           make_course(courses[6]),
+           make_course(courses[7])]
 
 print('First Year Seminar')
-for i in range(len(course1)):
-    print('{} - {}'.format(i, make_course(courses[i]).time_block))
+for section in course1:
+    print('{} - {}'.format(section.section_number, section.time_block))
 
 print('Principles of Computing')
-for i in range(len(course2)):
-    print('{} - {}'.format(i,
-                           make_course(courses[i + len(course1)]).time_block))
+for section in course2:
+    print('{} - {}'.format(section.section_number, section.time_block))
 
 
 problem.addVariable('a', course1)
 problem.addVariable('b', course2)
 
-# Valid Pairs
+# Pairs
 '''
-[17:30-20:00]
-[09:30-10:20]
-
+present
 [17:30-20:00]
 [13:30-14:20]
 
 [17:30-20:00]
-[11:30-12:20]
+[17:30-18:20]
 
+present
 [17:30-20:00]
-[12:30-13:20]
-
 [09:30-10:20]
-[17:30-20:00]
 
+present
 [09:30-10:20]
 [13:30-14:20]
 
+present
 [09:30-10:20]
-[11:30-12:20]
+[17:30-18:20]
 
+present
 [09:30-10:20]
-[12:30-13:20]
-
-Total of 8 valid pairs, 2 invalid pairs
+[09:30-10:20]
 '''
 
 
-def constraint_func(a: CourseSection, b: CourseSection):
-    return a.start_time > b.end_time or b.start_time > a.end_time
+def no_time_conflicts(a: CourseSection, b: CourseSection):
+    return a.end_time <= b.start_time and b.end_time <= a.start_time
 
+total_solutions = problem.getSolutions()
+print('Total Pairs: ' + str(len(total_solutions)))
 
-problem.addConstraint(constraint_func, ['a', 'b'])
+problem.addConstraint(no_time_conflicts, ['a', 'b'])
 
 solution_set = problem.getSolutions()
-print(len(solution_set))
+print('Valid Pairs: ' + str(len(solution_set)))
 
 # the solution is a dictionary containing two courses that form a valid solution
 for solution in solution_set:
     # the key is the name of the variables
     for key in solution:
+        print(solution[key])
         print(solution[key].time_block)
     print('\n')
 
