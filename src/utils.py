@@ -1,8 +1,6 @@
 """
 This file contains helper functions used throughout the program.
 """
-import re
-
 from classes import CourseSection
 
 
@@ -17,8 +15,7 @@ def print_solution(solution: dict, key: str) -> None:
 
 def print_solutions(solution_set: [dict]) -> None:
     """
-    The solution is a dictionary containing two courses
-    The key is the name of the variables
+    Prints all of the solutions in the solution set.
     """
     for solution in solution_set:
         for key in solution:
@@ -27,6 +24,9 @@ def print_solutions(solution_set: [dict]) -> None:
 
 
 def get_number_of_pairs(solution_set: [dict]) -> int:
+    """
+    Helper function for syntactical sugar.
+    """
     return len(solution_set)
 
 
@@ -67,22 +67,29 @@ def log_courses(course_sections: list) -> None:
                     course_section['sectionNumber'],
                     course_section['courseTitle'])
 
-    pretty_file = open('output.txt', mode='w')
-    csv_file = open('raw_output.txt', mode='w')
+    def raw_course_section(course_section: dict) -> str:
+        """
+        In the future, we may want to work with the raw data. Storing it in
+        CSV format is the most natural solution.
+        """
+        return '{},{},{}' \
+            .format(course_section['subjectCourse'],
+                    course_section['sectionNumber'],
+                    course_section['courseTitle'])
+
+    formatted_file = open('output.txt', mode='w')
+    raw_file = open('raw_output.txt', mode='w')
 
     for course_section in course_sections:
         try:
-            file_output = course_section_with_times(course_section)
+            formatted_output = course_section_with_times(course_section)
         except KeyError:
-            file_output = course_section_without_times(course_section)
+            formatted_output = course_section_without_times(course_section)
 
-        pretty_file.write(file_output)
+        raw_output = raw_course_section(course_section)
 
-        file_output = re.sub('\t+', ',', file_output)
-        file_output = re.sub(' - ', ',', file_output)
-        # TODO: Find a way to separate the course number from section number
-        # with a comma without removing all colons
-        csv_file.write(file_output)
+        formatted_file.write(formatted_output)
+        raw_file.write(raw_output)
 
-    pretty_file.close()
-    csv_file.close()
+    formatted_file.close()
+    raw_file.close()

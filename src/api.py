@@ -12,7 +12,7 @@ INTERESTED_KEYS = ['courseTitle', 'sectionId', 'sectionNumber',
 INTERESTED_TIME_KEYS = ['startTime', 'endTime', 'days']
 
 
-def get_courses(id: int, subject: str) -> [dict]:
+def get_courses(id: int, subject: str, count=None) -> [dict]:
     """
     Does all of the dirty work of grabbing course data from the API endpoint
     and cleaning it up into the format we want. The constants defined at the
@@ -23,6 +23,8 @@ def get_courses(id: int, subject: str) -> [dict]:
     :param subject:
     the department of the course (note: only works past the year 2007,
     as this is when course listings were adopted in the current format)
+    :param count:
+    optional argument to determine how many sections we return
     :return:
     the complete list of fetched courses
     """
@@ -58,6 +60,9 @@ def get_courses(id: int, subject: str) -> [dict]:
     url = 'https://api.maui.uiowa.edu/maui/api/pub/registrar/sections'
     response = get(url=url, params=payload).json()
     raw_courses = response['payload']
+
+    if count:
+        return clean_and_filter_courses(raw_courses)[0:count]
     return clean_and_filter_courses(raw_courses)
 
 

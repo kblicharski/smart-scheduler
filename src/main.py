@@ -5,10 +5,12 @@ import time
 
 from api import get_courses
 from utils import log_courses
+from pprint import pprint
 
 start = time.time()
 courses = get_courses(68, 'cs')
 log_courses(courses)
+pprint(courses)
 end = time.time()
 
 print('Process took {} seconds'.format(end-start))

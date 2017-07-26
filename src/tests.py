@@ -1,7 +1,5 @@
 """
-This is a placeholder for where automated unit tests will go.
-It currently contains some of the manual tests I have done which should be
-compiled into coherent test suites.
+This is a placeholder for where automated unit tests will go later.
 """
 from constraint import Problem
 
@@ -28,7 +26,7 @@ total_solutions = problem.getSolutions()
 print('Total Pairs: {}'.format(get_number_of_pairs(total_solutions)))
 
 
-# will not work when the a.end_time matches b.start_time or vice versa
+# TODO: fix so it works when the a.end_time matches b.start_time or vice versa
 def no_time_conflicts(a: CourseSection, b: CourseSection) -> bool:
     return (a.end_time < b.start_time or b.end_time < a.start_time) and \
            (a.end_time != b.end_time or a.start_time != b.start_time)
