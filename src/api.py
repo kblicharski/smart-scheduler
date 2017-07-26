@@ -70,7 +70,8 @@ def get_course_sections(id: int, subject: str, count=None) -> [dict]:
     raw_courses = response['payload']
     pprint(raw_courses[10])
 
-    if count: return clean_and_filter_courses(raw_courses)[0:count]
+    if count:
+        return clean_and_filter_courses(raw_courses)[0:count]
     return clean_and_filter_courses(raw_courses)
 
 

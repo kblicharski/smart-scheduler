@@ -152,7 +152,7 @@ def log_courses(courses: [Course]) -> None:
                                           course.enrolled_students,
                                           course.max_students,
                                           ', '.join([str(block) for block in
-                                                       course.time_blocks])))
+                                                     course.time_blocks])))
 
     formatted_file = open('all_courses_formatted.txt', mode='w')
     raw_file = open('all_courses_raw.txt', mode='w')
