@@ -1,7 +1,7 @@
 """
 This file contains helper functions used throughout the program.
 """
-from classes import CourseSection
+from classes import CourseSection, Course
 
 
 def print_solution(solution: dict, key: str) -> None:
@@ -41,7 +41,7 @@ def make_section(course: dict) -> CourseSection:
                          course['timeAndLocations'])
 
 
-def log_courses(course_sections: list) -> None:
+def log_course_sections(course_sections: [dict]) -> None:
     """
     Opens and writes to two different files.
     One for raw, comma-separated data and the other for human-readable output.
@@ -77,8 +77,8 @@ def log_courses(course_sections: list) -> None:
                     course_section['sectionNumber'],
                     course_section['courseTitle'])
 
-    formatted_file = open('output.txt', mode='w')
-    raw_file = open('raw_output.txt', mode='w')
+    formatted_file = open('all_sections_formatted.txt', mode='w')
+    raw_file = open('all_sections_raw.txt', mode='w')
 
     for course_section in course_sections:
         try:
@@ -93,3 +93,40 @@ def log_courses(course_sections: list) -> None:
 
     formatted_file.close()
     raw_file.close()
+
+
+def log_courses(courses: [Course]) -> None:
+    """
+
+    :param courses:
+    :return:
+    """
+    def course_formatted(course: Course) -> str:
+        """
+
+        :param course:
+        :return:
+        """
+        pass
+
+    def course_raw(course: Course) -> str:
+        """
+
+        :param course:
+        :return:
+        """
+        pass
+
+    formatted_file = open('all_courses_formatted.txt', mode='w')
+    raw_file = open('all_courses_raw.txt', mode='w')
+
+    for course in courses:
+        formatted_output = course_formatted(course)
+        raw_output = course_raw(course)
+
+        formatted_file.write(formatted_output)
+        raw_file.write(raw_output)
+
+    formatted_file.close()
+    raw_file.close()
+

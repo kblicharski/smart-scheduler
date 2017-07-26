@@ -7,12 +7,12 @@ from operator import itemgetter
 
 from api import get_course_sections
 from classes import Course
-from utils import log_courses, make_section
+from utils import log_course_sections, make_section
 from pprint import pprint
 
 start = time.time()
 course_section_data = get_course_sections(68, 'cs')
-log_courses(course_section_data)
+log_course_sections(course_section_data)
 # pprint(course_sections)
 
 course_section_data = sorted(course_section_data,
