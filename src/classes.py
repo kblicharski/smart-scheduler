@@ -57,11 +57,21 @@ class CourseSection():
     time_and_locations  list containing a dictionary with time values
     """
     def __init__(self, course_title: str, section_id: int, section_number: str,
-                 subject_course: str, time_and_locations: list):
+                 subject_course: str, time_and_locations: list,
+                 current_enroll: int, max_enroll: int, section_type: str):
         self.course_title = course_title
         self.section_id = section_id
         self.section_number = section_number
         self.subject_course = subject_course
+        self.section_type = section_type
+        try:
+            self.current_enroll = current_enroll
+        except KeyError:
+            self.current_enroll = 0
+        try:
+            self.max_enroll = max_enroll
+        except KeyError:
+            self.max_enroll = 0
         try:
             self.days = time_and_locations[0]['days']
             self.start_time = time_and_locations[0]['startTime']
@@ -97,3 +107,19 @@ class Course():
         time_blocks = []
         [time_blocks.append(section.time_block) for section in sections]
         return time_blocks
+
+    @property
+    def enrolled_students(self) -> int:
+        sum = 0
+        for section in self.sections:
+            sum += section.current_enroll
+        return sum
+
+    @property
+    def max_students(self):
+        sum = 0
+        for section in self.sections:
+            if section.max_enroll == 'Unlimited':
+                return 'Unlimited'
+            sum += int(section.max_enroll)
+        return sum

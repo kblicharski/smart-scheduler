@@ -36,11 +36,15 @@ def make_section(course: dict) -> CourseSection:
     """
     Factory to create a CourseSection from JSON data.
     """
+
     return CourseSection(course['courseTitle'],
                          course['sectionId'],
                          course['sectionNumber'],
                          course['subjectCourse'],
-                         course['timeAndLocations'])
+                         course['timeAndLocations'],
+                         course['currentEnroll'],
+                         course['maxEnroll'],
+                         course['sectionType'])
 
 
 def log_course_sections(course_sections: [dict]) -> None:
@@ -52,11 +56,15 @@ def log_course_sections(course_sections: [dict]) -> None:
         """
         This is the output format for sections with times.
         """
-        return ('{}:{}\t{} - {}\t\t{}'
+
+        return ('{}:{}\t{}/{}\t\t{} - {}\t\t{}\t\t{}'
                 .format(course_section['subjectCourse'],
                         course_section['sectionNumber'],
+                        course_section['currentEnroll'],
+                        course_section['maxEnroll'],
                         course_section['timeAndLocations'][0]['startTime'],
                         course_section['timeAndLocations'][0]['endTime'],
+                        course_section['sectionType'],
                         course_section['courseTitle']) + '\n')
 
     def course_section_without_times(course_section: dict) -> str:
@@ -64,9 +72,13 @@ def log_course_sections(course_sections: [dict]) -> None:
         Some sections do not have times.
         We do not want to halt execution, so we log them in a different format.
         """
-        return ('{}:{}\t\t\t\t\t\t{}'
+
+        return ('{}:{}\t{}/{}\t{}\t\t\t\t\t\t{}'
                 .format(course_section['subjectCourse'],
                         course_section['sectionNumber'],
+                        course_section['currentEnroll'],
+                        course_section['maxEnroll'],
+                        course_section['sectionType'],
                         course_section['courseTitle']) + '\n')
 
     def raw_course_section(course_section: dict) -> str:
@@ -74,9 +86,13 @@ def log_course_sections(course_sections: [dict]) -> None:
         In the future, we may want to work with the raw data. Storing it in
         CSV format is the most natural solution.
         """
-        return ('{},{},{}'
+
+        return ('{},{},{},{},{},{}'
                 .format(course_section['subjectCourse'],
                         course_section['sectionNumber'],
+                        course_section['currentEnroll'],
+                        course_section['maxEnroll'],
+                        course_section['sectionType'],
                         course_section['courseTitle']) + '\n')
 
     formatted_file = open('all_sections_formatted.txt', mode='w')
@@ -118,9 +134,11 @@ def log_courses(courses: [Course]) -> None:
 
         time_block_output = ' '.join(time_block_output)
 
-        output = ('{}\t{}\n {}\n\n\n'.format(course.subject_course,
-                                             course.course_title,
-                                             time_block_output))
+        output = ('{}\t{}\t{}/{}\n {}\n\n\n'.format(course.subject_course,
+                                                    course.course_title,
+                                                    course.enrolled_students,
+                                                    course.max_students,
+                                                    time_block_output))
         return output
 
     def course_raw(course: Course) -> str:
@@ -128,10 +146,12 @@ def log_courses(courses: [Course]) -> None:
         """
         """
         # TODO: clean up this logic
-        return ('{},{},{}\n'.format(course.subject_course,
-                                    course.course_title,
-                                    ', '.join([str(block) for block in
-                                               course.time_blocks])))
+        return ('{},{},{},{},{}\n'.format(course.subject_course,
+                                          course.course_title,
+                                          course.enrolled_students,
+                                          course.max_students,
+                                          ', '.join([str(block) for block in
+                                                       course.time_blocks])))
 
     formatted_file = open('all_courses_formatted.txt', mode='w')
     raw_file = open('all_courses_raw.txt', mode='w')

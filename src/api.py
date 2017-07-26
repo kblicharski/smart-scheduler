@@ -3,12 +3,16 @@ This file contains functions which wrap the MAUI API endpoints with Python
 functions for ease of development. Long-term goals include writing a
 fully-fledged API wrapper.
 """
+from pprint import pprint
+
 from requests import get
 from boltons.iterutils import remap
 
 
 INTERESTED_KEYS = ['courseTitle', 'sectionId', 'sectionNumber',
-                   'subjectCourse', 'timeAndLocations']
+                   'subjectCourse', 'timeAndLocations', 'currentEnroll',
+                   'maxEnroll',
+                   'sectionType']
 INTERESTED_TIME_KEYS = ['startTime', 'endTime', 'days']
 
 
@@ -64,6 +68,7 @@ def get_course_sections(id: int, subject: str, count=None) -> [dict]:
     url = 'https://api.maui.uiowa.edu/maui/api/pub/registrar/sections'
     response = get(url=url, params=payload).json()
     raw_courses = response['payload']
+    pprint(raw_courses[10])
 
     if count: return clean_and_filter_courses(raw_courses)[0:count]
     return clean_and_filter_courses(raw_courses)
