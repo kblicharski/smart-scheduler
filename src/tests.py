@@ -5,74 +5,62 @@ compiled into coherent test suites.
 """
 from constraint import Problem
 
-from classes import CourseSection
+from classes import CourseSection, Course
 from main import courses
-from utils import print_solution, make_course
+from utils import make_section, print_solutions, get_number_of_pairs
 
 problem = Problem()
 
-course1 = [make_course(courses[0]),
-           make_course(courses[1])]
+section_type_one = [make_section(courses[0]),
+                    make_section(courses[1])]
 
-course2 = [make_course(courses[2]),
-           make_course(courses[6]),
-           make_course(courses[7])]
+section_type_two = [make_section(courses[2]),
+                    make_section(courses[6]),
+                    make_section(courses[7])]
 
-print('First Year Seminar')
-for section in course1:
-    print('{} - {}'.format(section.section_number, section.time_block))
+course_one = Course(section_type_one)
+course_two = Course(section_type_two)
 
-print('Principles of Computing')
-for section in course2:
-    print('{} - {}'.format(section.section_number, section.time_block))
+problem.addVariable('a', course_one.sections)
+problem.addVariable('b', course_two.sections)
 
-
-problem.addVariable('a', course1)
-problem.addVariable('b', course2)
-
-'''
-PRESENT
-[17:30-20:00]
-[13:30-14:20]
-
-[17:30-20:00]
-[17:30-18:20]
-
-PRESENT
-[17:30-20:00]
-[09:30-10:20]
-
-PRESENT
-[09:30-10:20]
-[13:30-14:20]
-
-PRESENT
-[09:30-10:20]
-[17:30-18:20]
-
-
-[09:30-10:20]
-[09:30-10:20]
-'''
+total_solutions = problem.getSolutions()
+print('Total Pairs: {}'.format(get_number_of_pairs(total_solutions)))
 
 
 # will not work when the a.end_time matches b.start_time or vice versa
-def no_time_conflicts(a: CourseSection, b: CourseSection):
+def no_time_conflicts(a: CourseSection, b: CourseSection) -> bool:
     return (a.end_time < b.start_time or b.end_time < a.start_time) and \
            (a.end_time != b.end_time or a.start_time != b.start_time)
 
 
-total_solutions = problem.getSolutions()
-print('Total Pairs: ' + str(len(total_solutions)))
-
 problem.addConstraint(no_time_conflicts, ['a', 'b'])
 
 solution_set = problem.getSolutions()
-print('Valid Pairs: ' + str(len(solution_set)))
+print('Valid Pairs: {}'.format(get_number_of_pairs(solution_set)))
 
-# the solution is a dictionary containing two courses
-for solution in solution_set:
-    # the key is the name of the variables
-    for key in solution:
-        print_solution(solution, key)
-    print('\n')
+print_solutions(solution_set)
+
+"""
+[17:30-20:00]
+[13:30-14:20]
+
+[17:30-20:00]
+[17:30-18:20]
+
+PRESENT
+[17:30-20:00]
+[09:30-10:20]
+
+PRESENT
+[09:30-10:20]
+[13:30-14:20]
+
+PRESENT
+[09:30-10:20]
+[17:30-18:20]
+
+
+[09:30-10:20]
+[09:30-10:20]
+"""
