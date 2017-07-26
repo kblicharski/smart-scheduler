@@ -2,29 +2,20 @@
 This is the entry point to the program.
 """
 import time
-from itertools import groupby
-from operator import itemgetter
 
 from api import get_course_sections
-from classes import Course
-from utils import log_course_sections, make_section, log_courses
+from utils import log_course_sections, log_courses, create_course_groups
 
 start = time.time()
+
 course_section_data = get_course_sections(68, 'cs')
+course_section_data += get_course_sections(68, 'ece')
+course_section_data += get_course_sections(68, 'ie')
+course_section_data += get_course_sections(68, 'math')
+
 log_course_sections(course_section_data)
 
-course_section_data = sorted(course_section_data,
-                             key=itemgetter('subjectCourse'))
-
-courses = []
-for key, values in groupby(course_section_data,
-                           key=itemgetter('subjectCourse')):
-    values = list(values)
-    sections = []
-    for value in values:
-        sections.append(make_section(value))
-    courses.append(Course(sections))
-
+courses = create_course_groups(course_section_data)
 log_courses(courses)
 
 end = time.time()

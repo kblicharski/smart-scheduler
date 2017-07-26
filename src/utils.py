@@ -1,7 +1,8 @@
 """
 This file contains helper functions used throughout the program.
 """
-import re
+from itertools import groupby
+from operator import itemgetter
 
 from classes import CourseSection, Course
 
@@ -165,3 +166,24 @@ def log_courses(courses: [Course]) -> None:
 
     formatted_file.close()
     raw_file.close()
+
+
+def create_course_groups(course_section_data: [dict]) -> [Course]:
+    """
+    # TODO (docs)
+    :param course_section_data:
+    :return:
+    """
+    course_section_data = sorted(course_section_data,
+                                 key=itemgetter('subjectCourse'))
+
+    courses = []
+    for key, values in groupby(course_section_data,
+                               key=itemgetter('subjectCourse')):
+        values = list(values)
+        sections = []
+        for value in values:
+            sections.append(make_section(value))
+        courses.append(Course(sections))
+
+    return courses
