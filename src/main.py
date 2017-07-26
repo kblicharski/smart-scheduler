@@ -2,18 +2,32 @@
 This is the entry point to the program.
 """
 import time
+from itertools import groupby
+from operator import itemgetter
 
 from api import get_course_sections
-from utils import log_courses
+from utils import log_courses, make_section
 from pprint import pprint
 
 start = time.time()
-course_sections = get_course_sections(68, 'cs')
+course_sections = get_course_sections(68, 'cs', 5)
 log_courses(course_sections)
-pprint(course_sections)
+# pprint(course_sections)
+
+course_sections = sorted(course_sections, key=itemgetter('subjectCourse'))
+
+for key, values in groupby(course_sections, key=itemgetter('subjectCourse')):
+    print(key)
+    values = list(values)
+    print(values)
+    for value in values:
+        section = make_section(value)
+        print(section)
+
+
 end = time.time()
 
-print('Process took {} seconds'.format(end-start))
+print('Process took {} seconds'.format(end - start))
 
 '''
 def fetch_courses(courses: list):
