@@ -33,9 +33,9 @@ def clean_and_filter_courses(courses: list):
                                       input[i]['timeAndLocations']))
             input[i]['timeAndLocations'] = filtered_times
 
-    cleaned = remap(courses, lambda p, k, v: v is not None
-                                             and v != []
-                                             and v != '')
+    cleaned = remap(courses,
+                    lambda p, k, v: v is not None and v != [] and v != '' and
+                    v != [{}] and v != {})
     filtered = list(map(lambda p: filter_keys(p, INTERESTED_KEYS),
                         cleaned))
     filter_time_fields(filtered)

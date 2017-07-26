@@ -28,6 +28,9 @@ class TimeBlock():
         Params:
             time    human-readable time ('8:00A', '5:30P', etc)
         """
+        if time == '':
+            return time
+
         tokens = time.split(':')
         hours = int(tokens[0])
         minutes = int(tokens[1][:2])
@@ -56,11 +59,16 @@ class CourseSection():
         self.section_id = section_id
         self.section_number = section_number
         self.subject_course = subject_course
-        self.days = time_and_locations[0]['days']
-        self.start_time = time_and_locations[0]['startTime']
-        self.end_time = time_and_locations[0]['endTime']
-        self.time_block = self.create_time_block(self.start_time,
-                                                 self.end_time)
+        try:
+            self.days = time_and_locations[0]['days']
+            self.start_time = time_and_locations[0]['startTime']
+            self.end_time = time_and_locations[0]['endTime']
+            self.time_block = self.create_time_block(self.start_time,
+                                                     self.end_time)
+        except KeyError:
+            print("Course '{}' has no 'timeAndLocations' field"
+                  .format(self.course_title))
+            self.time_block = self.create_time_block('', '')
 
     def __str__(self):
         return '{}:{} - {}'.format(self.subject_course,

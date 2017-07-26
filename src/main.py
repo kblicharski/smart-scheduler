@@ -6,24 +6,29 @@ from itertools import groupby
 from operator import itemgetter
 
 from api import get_course_sections
+from classes import Course
 from utils import log_courses, make_section
 from pprint import pprint
 
 start = time.time()
-course_sections = get_course_sections(68, 'cs', 5)
-log_courses(course_sections)
+course_section_data = get_course_sections(68, 'cs')
+log_courses(course_section_data)
 # pprint(course_sections)
 
-course_sections = sorted(course_sections, key=itemgetter('subjectCourse'))
+course_section_data = sorted(course_section_data,
+                             key=itemgetter('subjectCourse'))
 
-for key, values in groupby(course_sections, key=itemgetter('subjectCourse')):
-    print(key)
+courses = []
+for key, values in groupby(course_section_data,
+                           key=itemgetter('subjectCourse')):
     values = list(values)
-    print(values)
+    sections = []
     for value in values:
-        section = make_section(value)
-        print(section)
+        sections.append(make_section(value))
+    courses.append(Course(sections))
 
+for course in courses:
+    print(course)
 
 end = time.time()
 
