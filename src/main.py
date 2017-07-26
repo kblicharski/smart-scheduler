@@ -3,14 +3,14 @@ This is the entry point to the program.
 """
 import time
 
-from api import get_courses
+from api import get_course_sections
 from utils import log_courses
 from pprint import pprint
 
 start = time.time()
-courses = get_courses(68, 'cs')
-log_courses(courses)
-pprint(courses)
+course_sections = get_course_sections(68, 'cs')
+log_courses(course_sections)
+pprint(course_sections)
 end = time.time()
 
 print('Process took {} seconds'.format(end-start))

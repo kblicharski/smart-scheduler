@@ -4,17 +4,17 @@ This is a placeholder for where automated unit tests will go later.
 from constraint import Problem
 
 from classes import CourseSection, Course
-from main import courses
+from main import course_sections
 from utils import make_section, print_solutions, get_number_of_pairs
 
 problem = Problem()
 
-section_type_one = [make_section(courses[0]),
-                    make_section(courses[1])]
+section_type_one = [make_section(course_sections[0]),
+                    make_section(course_sections[1])]
 
-section_type_two = [make_section(courses[2]),
-                    make_section(courses[6]),
-                    make_section(courses[7])]
+section_type_two = [make_section(course_sections[2]),
+                    make_section(course_sections[6]),
+                    make_section(course_sections[7])]
 
 course_one = Course(section_type_one)
 course_two = Course(section_type_two)
