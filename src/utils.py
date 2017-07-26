@@ -1,6 +1,8 @@
 """
 This file contains helper functions used throughout the program.
 """
+import re
+
 from classes import CourseSection, Course
 
 
@@ -50,32 +52,32 @@ def log_course_sections(course_sections: [dict]) -> None:
         """
         This is the output format for sections with times.
         """
-        return '{}:{}\t{} - {}\t\t{}' \
-            .format(course_section['subjectCourse'],
-                    course_section['sectionNumber'],
-                    course_section['timeAndLocations'][0]['startTime'],
-                    course_section['timeAndLocations'][0]['endTime'],
-                    course_section['courseTitle']) + '\n'
+        return ('{}:{}\t{} - {}\t\t{}'
+                .format(course_section['subjectCourse'],
+                        course_section['sectionNumber'],
+                        course_section['timeAndLocations'][0]['startTime'],
+                        course_section['timeAndLocations'][0]['endTime'],
+                        course_section['courseTitle']) + '\n')
 
     def course_section_without_times(course_section: dict) -> str:
         """
         Some sections do not have times.
         We do not want to halt execution, so we log them in a different format.
         """
-        return '{}:{}\t\t\t\t\t\t{}' \
-            .format(course_section['subjectCourse'],
-                    course_section['sectionNumber'],
-                    course_section['courseTitle'])
+        return ('{}:{}\t\t\t\t\t\t{}'
+                .format(course_section['subjectCourse'],
+                        course_section['sectionNumber'],
+                        course_section['courseTitle']) + '\n')
 
     def raw_course_section(course_section: dict) -> str:
         """
         In the future, we may want to work with the raw data. Storing it in
         CSV format is the most natural solution.
         """
-        return '{},{},{}' \
-            .format(course_section['subjectCourse'],
-                    course_section['sectionNumber'],
-                    course_section['courseTitle'])
+        return ('{},{},{}'
+                .format(course_section['subjectCourse'],
+                        course_section['sectionNumber'],
+                        course_section['courseTitle']) + '\n')
 
     formatted_file = open('all_sections_formatted.txt', mode='w')
     raw_file = open('all_sections_raw.txt', mode='w')
@@ -96,26 +98,40 @@ def log_course_sections(course_sections: [dict]) -> None:
 
 
 def log_courses(courses: [Course]) -> None:
+    # TODO (docs)
     """
-
-    :param courses:
-    :return:
     """
     def course_formatted(course: Course) -> str:
+        # TODO (docs)
         """
+        """
+        time_block_output = []
 
-        :param course:
-        :return:
-        """
-        pass
+        count = 0
+        for block in course.time_blocks:
+            time_block_output.append(str(block).replace("'", ""))
+            count += 1
+
+            if count == 4:
+                time_block_output.append('\n')
+                count = 0
+
+        time_block_output = ' '.join(time_block_output)
+
+        output = ('{}\t{}\n {}\n\n\n'.format(course.subject_course,
+                                             course.course_title,
+                                             time_block_output))
+        return output
 
     def course_raw(course: Course) -> str:
+        # TODO (docs)
         """
-
-        :param course:
-        :return:
         """
-        pass
+        # TODO: clean up this logic
+        return ('{},{},{}\n'.format(course.subject_course,
+                                    course.course_title,
+                                    ', '.join([str(block) for block in
+                                               course.time_blocks])))
 
     formatted_file = open('all_courses_formatted.txt', mode='w')
     raw_file = open('all_courses_raw.txt', mode='w')
@@ -129,4 +145,3 @@ def log_courses(courses: [Course]) -> None:
 
     formatted_file.close()
     raw_file.close()
-

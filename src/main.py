@@ -7,13 +7,11 @@ from operator import itemgetter
 
 from api import get_course_sections
 from classes import Course
-from utils import log_course_sections, make_section
-from pprint import pprint
+from utils import log_course_sections, make_section, log_courses
 
 start = time.time()
 course_section_data = get_course_sections(68, 'cs')
 log_course_sections(course_section_data)
-# pprint(course_sections)
 
 course_section_data = sorted(course_section_data,
                              key=itemgetter('subjectCourse'))
@@ -27,8 +25,7 @@ for key, values in groupby(course_section_data,
         sections.append(make_section(value))
     courses.append(Course(sections))
 
-for course in courses:
-    print(course)
+log_courses(courses)
 
 end = time.time()
 

@@ -18,7 +18,10 @@ class TimeBlock():
         # Removes seconds for readability
         [start, end] = map(lambda s: s[:-3], [str(self.start_time),
                                               str(self.end_time)])
-        return '[' + str(start) + '-' + str(end) + ']'
+        output = '[' + str(start) + '-' + str(end) + ']'
+        if start and end:
+            return output
+        return '[There is no time associated with this course.]'
 
     def to_time(self, time: str) -> datetime:
         """
@@ -29,7 +32,7 @@ class TimeBlock():
             time    human-readable time ('8:00A', '5:30P', etc)
         """
         if time == '':
-            return time
+            return ''
 
         tokens = time.split(':')
         hours = int(tokens[0])
@@ -66,8 +69,6 @@ class CourseSection():
             self.time_block = self.create_time_block(self.start_time,
                                                      self.end_time)
         except KeyError:
-            print("Course '{}' has no 'timeAndLocations' field"
-                  .format(self.course_title))
             self.time_block = self.create_time_block('', '')
 
     def __str__(self):

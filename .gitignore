@@ -92,5 +92,9 @@ ENV/
 .idea
 .DS_Store
 .swp
-output.txt
-raw_output.txt
+
+
+all_courses_formatted.txt
+all_courses_raw.txt
+all_sections_formatted.txt
+all_sections_raw.txt
