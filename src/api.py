@@ -12,7 +12,7 @@ INTERESTED_KEYS = ['courseTitle', 'sectionId', 'sectionNumber',
 INTERESTED_TIME_KEYS = ['startTime', 'endTime', 'days']
 
 
-def get_courses(id: int, subject: str):
+def get_courses(id: int, subject: str) -> [dict]:
     """
     Does all of the dirty work of grabbing course data from the API endpoint
     and cleaning it up into the format we want. The constants defined at the
@@ -22,14 +22,15 @@ def get_courses(id: int, subject: str):
     the sessionId of the courses (what semester/year they were offered in)
     :param subject:
     the department of the course (note: only works past the year 2007,
-    or ID 1, as this is when course listings were adopted in the current format)
+    as this is when course listings were adopted in the current format)
     :return:
     the complete list of fetched courses
     """
     def clean_and_filter_courses(courses: list):
         """
         Removes unnecessary information (namely, values that are None or
-        empty lists). Also filters according to the keys we want, defined above.
+        empty lists).
+        Also filters according to the keys we want, defined above.
 
         :param courses:
         the raw, unfiltered list of course data
@@ -47,7 +48,8 @@ def get_courses(id: int, subject: str):
                 input[i]['timeAndLocations'] = filtered_times
 
         cleaned = remap(courses, lambda p, k, v: v is not None and v != [])
-        filtered = list(map(lambda p: filter_keys(p, INTERESTED_KEYS), cleaned))
+        filtered = list(map(lambda p: filter_keys(p, INTERESTED_KEYS),
+                            cleaned))
         filter_time_fields(filtered)
         return filtered
 
@@ -57,6 +59,7 @@ def get_courses(id: int, subject: str):
     response = get(url=url, params=payload).json()
     raw_courses = response['payload']
     return clean_and_filter_courses(raw_courses)
+
 
 """
 Session IDs for upcoming semesters

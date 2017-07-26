@@ -1,65 +1,17 @@
 """
 This is the entry point to the program.
 """
-import re
-
-from constraint import Problem, Solver, Constraint
+import time
 
 from api import get_courses
-from classes import CourseSection
+from utils import log_courses
 
-
-def log_courses(courses: list):
-    """
-    Opens and writes to two different files.
-    One for raw, comma-separated data and the other for human-readable output.
-    """
-    pretty_file = open('../output.txt', mode='w')
-    csv_file = open('../raw_output.txt', mode='w')
-
-    for course in courses:
-        try:
-            str = '{}:{}\t{} - {}\t\t{}' \
-                .format(course['subjectCourse'],
-                        course['sectionNumber'],
-                        course['timeAndLocations'][0]['startTime'],
-                        course['timeAndLocations'][0]['endTime'],
-                        course['courseTitle'])
-        except KeyError:
-            """
-            Some courses do not have times. We do not want to halt execution,
-            just print them in a different format.
-            """
-            str = '{}:{}\t\t\t\t\t\t{}' \
-                .format(course['subjectCourse'],
-                        course['sectionNumber'],
-                        course['courseTitle'])
-
-        str += '\n'
-        pretty_file.write(str)
-
-        str = re.sub('\t+', ',', str)
-        str = re.sub(' - ', ',', str)
-        csv_file.write(str)
-
-    pretty_file.close()
-    csv_file.close()
-
-
-def make_course(course: dict):
-    """
-    Helper function to quickly turn JSON data into CourseSections for testing
-    """
-    return CourseSection(course['courseTitle'], course[
-        'sectionId'], course['sectionNumber'], course[
-                             'subjectCourse'], course['timeAndLocations'])
-
-cs_courses = get_courses(68, 'cs')
-# ece_courses = get_courses(68, 'ece')
-# math_courses = get_courses(68, 'math')
-courses = cs_courses
-
+start = time.time()
+courses = get_courses(68, 'cs')
 log_courses(courses)
+end = time.time()
+
+print('Process took {} seconds'.format(end-start))
 
 '''
 def fetch_courses(courses: list):

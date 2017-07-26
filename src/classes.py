@@ -3,7 +3,6 @@ This file contains class definitions for the various values we are considering.
 Eventually we will want to set up automatic JSON deserializing.
 """
 import datetime
-import string
 
 
 class CourseSection():
@@ -46,7 +45,7 @@ class TimeBlock():
         end_time: time      ending time of the course section
     """
 
-    def __init__(self, start_time: string, end_time: string):
+    def __init__(self, start_time: str, end_time: str) -> None:
         self.start_time = self.to_time(start_time)
         self.end_time = self.to_time(end_time)
 
@@ -56,7 +55,7 @@ class TimeBlock():
                                               str(self.end_time)])
         return '[' + str(start) + '-' + str(end) + ']'
 
-    def to_time(self, time: string):
+    def to_time(self, time: str) -> datetime:
         """
         Returns a time object from a passed string representation of a time.
         This is a convenient format for internal time calculations.

@@ -6,8 +6,8 @@ compiled into coherent test suites.
 from constraint import Problem
 
 from classes import CourseSection
-from main import make_course, courses
-
+from main import courses
+from utils import print_solution, make_course
 
 problem = Problem()
 
@@ -30,35 +30,37 @@ for section in course2:
 problem.addVariable('a', course1)
 problem.addVariable('b', course2)
 
-# Pairs
 '''
-present
+PRESENT
 [17:30-20:00]
 [13:30-14:20]
 
 [17:30-20:00]
 [17:30-18:20]
 
-present
+PRESENT
 [17:30-20:00]
 [09:30-10:20]
 
-present
+PRESENT
 [09:30-10:20]
 [13:30-14:20]
 
-present
+PRESENT
 [09:30-10:20]
 [17:30-18:20]
 
-present
+
 [09:30-10:20]
 [09:30-10:20]
 '''
 
 
+# will not work when the a.end_time matches b.start_time or vice versa
 def no_time_conflicts(a: CourseSection, b: CourseSection):
-    return a.end_time <= b.start_time and b.end_time <= a.start_time
+    return (a.end_time < b.start_time or b.end_time < a.start_time) and \
+           (a.end_time != b.end_time or a.start_time != b.start_time)
+
 
 total_solutions = problem.getSolutions()
 print('Total Pairs: ' + str(len(total_solutions)))
@@ -68,10 +70,9 @@ problem.addConstraint(no_time_conflicts, ['a', 'b'])
 solution_set = problem.getSolutions()
 print('Valid Pairs: ' + str(len(solution_set)))
 
-# the solution is a dictionary containing two courses that form a valid solution
+# the solution is a dictionary containing two courses
 for solution in solution_set:
     # the key is the name of the variables
     for key in solution:
-        print(solution[key])
-        print(solution[key].time_block)
+        print_solution(solution, key)
     print('\n')
