@@ -37,7 +37,7 @@ problem.addConstraint(no_time_conflicts, ['a', 'b'])
 solution_set = problem.getSolutions()
 print('Valid Pairs: {}'.format(get_number_of_pairs(solution_set)))
 
-print_solutions(solution_set)
+print_solutions([solution for solution in solution_set])
 
 """
 [17:30-20:00]

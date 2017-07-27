@@ -16,7 +16,7 @@ def print_solution(solution: dict, key: str) -> None:
                               solution[key].time_block))
 
 
-def print_solutions(solution_set: [dict]) -> None:
+def print_solutions(solution_set) -> None:
     """
     Prints all of the solutions in the solution set.
     """
@@ -26,7 +26,7 @@ def print_solutions(solution_set: [dict]) -> None:
         print('\n')
 
 
-def get_number_of_pairs(solution_set: [dict]) -> int:
+def get_number_of_solutions(solution_set) -> int:
     """
     Helper function for syntactical sugar.
     """
