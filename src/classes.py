@@ -64,6 +64,7 @@ class CourseSection():
         self.section_number = section_number
         self.subject_course = subject_course
         self.section_type = section_type
+        # TODO: Find a workaround for these try/except blocks
         try:
             self.current_enroll = current_enroll
         except KeyError:

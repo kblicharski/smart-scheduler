@@ -37,7 +37,6 @@ def make_section(course: dict) -> CourseSection:
     """
     Factory to create a CourseSection from JSON data.
     """
-
     return CourseSection(course['courseTitle'],
                          course['sectionId'],
                          course['sectionNumber'],
@@ -169,8 +168,8 @@ def log_courses(courses: [Course]) -> None:
 
 
 def create_course_groups(course_section_data: [dict]) -> [Course]:
-    """
     # TODO (docs)
+    """
     :param course_section_data:
     :return:
     """
