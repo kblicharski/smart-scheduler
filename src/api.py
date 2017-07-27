@@ -16,6 +16,10 @@ INTERESTED_KEYS = ['courseTitle', 'sectionId', 'sectionNumber',
 INTERESTED_TIME_KEYS = ['startTime', 'endTime', 'days']
 
 
+def filter_keys(input: dict, keys: list):
+    return {k: v for k, v in input.items() if k in keys}
+
+
 def clean_and_filter_courses(courses: list):
     """
     Removes unnecessary information (namely, values that are None or
@@ -27,9 +31,6 @@ def clean_and_filter_courses(courses: list):
     :return:
     a list of cleaned courses
     """
-    def filter_keys(input: dict, keys: list):
-        return {k: v for k, v in input.items() if k in keys}
-
     def filter_time_fields(input: list):
         for i in range(len(input)):
             filtered_times = list(map(lambda p:
@@ -63,46 +64,49 @@ def get_course_sections(id: int, subject: str, count=None) -> [dict]:
     :return:
     the list of fetched course sections
     """
-    payload = "json={{sessionId: {}, courseSubject: '{}'}}"\
-        .format(str(id), subject)
     url = 'https://api.maui.uiowa.edu/maui/api/pub/registrar/sections'
-    response = get(url=url, params=payload).json()
-    raw_courses = response['payload']
-    pprint(raw_courses[10])
+    payload = "json={{sessionId: {}, courseSubject: '{}'}}".format(str(id),
+                                                                   subject)
+    response = get(url=url, params=payload)
+
+    if response.status_code != 200:
+        print('ERROR: HTTP{}'.format(response.status_code))
+        raise ValueError
+
+    data = response.json()
+    raw_courses = data['payload']
 
     if count:
         return clean_and_filter_courses(raw_courses)[0:count]
     return clean_and_filter_courses(raw_courses)
 
 
-"""
-Session IDs for upcoming semesters
-    {
-        "id": 69,
-        "startDate": "2017-05-15T05:00:00.000+0000",
-        "endDate": "2017-08-04T05:00:00.000+0000",
-        "shortDescription": "Summer 2017",
-        "legacyCode": "20171"
-    },
-    {
-        "id": 68,
-        "startDate": "2017-08-21T05:00:00.000+0000",
-        "endDate": "2017-12-08T06:00:00.000+0000",
-        "shortDescription": "Fall 2017",
-        "legacyCode": "20173"
-    },
-    {
-        "id": 70,
-        "startDate": "2017-12-27T06:00:00.000+0000",
-        "endDate": "2018-01-12T06:00:00.000+0000",
-        "shortDescription": "Winter 2017",
-        "legacyCode": "20175"
-    },
-    {
-        "id": 71,
-        "startDate": "2018-01-16T06:00:00.000+0000",
-        "endDate": "2018-05-04T05:00:00.000+0000",
-        "shortDescription": "Spring 2018",
-        "legacyCode": "20178"
-    },
-"""
+def get_all_department_identifiers() -> [dict]:
+    """
+    """
+    url = 'https://api.maui.uiowa.edu/maui/api/pub/registrar/program-of' \
+        '-study/program'
+    headers = {'Content-Type': 'application/x-www-form-urlencoded',
+               'Accept': 'application/json'}
+    response = get(url=url, headers=headers)
+
+    if response.status_code != 200:
+        print('ERROR: HTTP{}'.format(response.status_code))
+        raise ValueError
+
+    data = response.json()
+    cleaned = remap(data,
+                    lambda p, k, v: v is not None and v != [] and v != '' and
+                    v != [{}] and v != {})
+    filtered = list(map(lambda p: filter_keys(p, ['academicUnit']), cleaned))
+    filtered = list(map(lambda p: p['academicUnit'], filtered))
+    departments = list(map(lambda p: filter_keys(p, ['naturalKey']), filtered))
+    departments = list(map(lambda p: p['naturalKey'], departments))
+    departments = list(sorted(list(set(departments))))
+
+    new_filtered = []
+    for item in departments:
+        if len(item) > 1:
+            new_filtered.append(item)
+
+    return new_filtered
