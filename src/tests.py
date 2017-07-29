@@ -4,7 +4,7 @@ This is a placeholder for where automated unit tests will go later.
 from constraint import Problem
 
 from classes import CourseSection, Course
-from main import course_sections
+from main import course_section_data
 from utils import make_section, print_solutions, get_number_of_pairs
 
 problem = Problem()

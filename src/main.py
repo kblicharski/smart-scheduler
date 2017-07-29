@@ -62,7 +62,7 @@ def get_courses_from_user_input(input_ids: [str],
 start = time.time()
 
 semester = 68
-departments = ['cs', 'ece', 'ie']
+departments = ['cs', 'ie', 'ece']
 
 course_section_data = get_course_section_data(semester, departments)
 log_course_sections(course_section_data)
@@ -74,62 +74,70 @@ end = time.time()
 
 print('Process 1 took {} seconds'.format(end - start))
 
-
-requested_course_identifiers = ['CS:3330',
-                                'ECE:3000',
-                                'ECE:3330',
-                                'ECE:3320',
-                                'ECE:3540',
-                                'IE:4172']
+#
+# requested_course_identifiers = ['CS:3330',
+#                                 'ECE:3330',
+#                                 'ECE:3320',
+#                                 'IE:4172',
+#                                 'ECE:3000',
+#                                 'ECE:3540']
+#
+requested_course_identifiers = ['ECE:3330',
+                                'ECE:3540']
 
 chosen_courses = get_courses_from_user_input(requested_course_identifiers,
                                              courses)
 
 log_courses(chosen_courses)
 
-
-def find_solutions(courses: [Course]) -> [dict]:
-    problem = Problem()
-
-    for course in courses:
-        problem.addVariable(course.subject_course,
-                            course.sections)
-
-    def no_time_conflicts(*args) -> bool:
-        is_valid = False
-        valid_count = 0
-        for arg in args:
-            for arg_other in args:
-                check1 = (arg.end_time < arg_other.start_time or
-                          arg_other.end_time < arg.start_time)
-                check2 = (arg.end_time != arg_other.end_time or
-                          arg.start_time != arg_other.start_time)
-                check3 = (arg != arg_other)
-                is_valid = check1 and check2 and check3
-                if is_valid:
-                    valid_count += 1
-                print('{}\t{}\t{}'.format(arg, arg_other, is_valid))
-        # this returns all of the solutions
-        print('Total Valid Pairings: ' + str(valid_count))
-        return True
-
-        # this returns none of the solutions
-        # return is_valid
-
-    problem.addConstraint(no_time_conflicts,
-                          [course.subject_course for course in courses])
-
-    solution_set = problem.getSolutions()
-    solutions = get_number_of_solutions(solution_set)
-    pprint(solution_set)
-    print('Solutions: ' + str(solutions))
-
-    # TODO
-    # print_solutions needs to be altered
-    # print_solutions(solution_set)
-
-
-find_solutions(chosen_courses)
+departments = get_all_department_identifiers()
+#
+#
+# def find_solutions(courses: [Course]) -> [dict]:
+#     problem = Problem()
+#
+#     for course in courses:
+#         problem.addVariable(course.subject_course,
+#                             course.sections)
+#
+#     def no_time_conflicts(*args) -> bool:
+#         valid_count = 0
+#         for arg in args:
+#             for arg_other in args:
+#                 check1 = (arg.end_time < arg_other.start_time or
+#                           arg_other.end_time < arg.start_time)
+#                 check2 = (arg.end_time != arg_other.end_time or
+#                           arg.start_time != arg_other.start_time)
+#                 check3 = (arg == arg_other)
+#                 is_valid = (check1 and check2) or check3
+#
+#                 if not is_valid:
+#                     print('{}\t{}\t{}'.format(arg, arg_other, is_valid))
+#                     print('Total Valid Pairings: ' + str(valid_count))
+#                     return False
+#
+#                 print('{}\t{}\t{}'.format(arg, arg_other, is_valid))
+#         print('Total Valid Pairings: ' + str(valid_count))
+#         # this returns all of the solutions
+#         return True
+#
+#         # this returns none of the solutions
+#         # return is_valid
+#
+#     problem.addConstraint(no_time_conflicts,
+#                           [course.subject_course for course in courses])
+#
+#     solution_set = problem.getSolutions()
+#     solutions = get_number_of_solutions(solution_set)
+#     print_solutions(solution_set)
+#     print('Solutions: ' + str(solutions))
+#
+#     # TODO
+#     # print_solutions needs to be altered
+#     # print_solutions(solution_set)
+#
+#
+# find_solutions(chosen_courses)
 
 '''
 departments = get_all_department_identifiers()

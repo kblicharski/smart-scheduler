@@ -102,6 +102,7 @@ def get_all_department_identifiers() -> [dict]:
     filtered = list(map(lambda p: p['academicUnit'], filtered))
     departments = list(map(lambda p: filter_keys(p, ['naturalKey']), filtered))
     departments = list(map(lambda p: p['naturalKey'], departments))
+    pprint(departments)
     departments = list(sorted(list(set(departments))))
 
     new_filtered = []
